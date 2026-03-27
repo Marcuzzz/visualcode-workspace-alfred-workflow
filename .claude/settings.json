@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wds=\"/Users/marcotten/Documents/projects\" workspace_dirs=\"/tmp/test-workspaces\" node app.js my)",
+      "Bash(python3 -m json.tool)",
+      "Bash(wds=\"/Users/marcotten/Documents/projects\" node app.js visual)",
+      "Bash(node --version)",
+      "Bash(npx nexe --version)",
+      "Read(//Users/marcotten/.nexe/**)",
+      "Bash(npm install --save-dev @yao-pkg/pkg)",
+      "Bash(npm run package-mac)",
+      "Bash(wds=\"/Users/marcotten/Documents/projects\" ./visualcode visual)",
+      "Read(//Users/marcotten/Documents/projects/vsc-workspaces/**)",
+      "Read(//Users/marcotten/Documents/projects/**)",
+      "Read(//Users/marcotten/.claude/**)",
+      "Bash(for i:*)",
+      "Bash(do uuidgen:*)",
+      "Bash(done)",
+      "Bash(node app.js mustbe)",
+      "Bash(node app.js workspace)",
+      "Bash(node app.js workspace must)",
+      "Bash(wds=/Users/marcotten/Documents/projects node app.js mustbe)",
+      "Bash(node app.js symlink /Users/marcotten/Documents/projects/vsc-workspaces/mustbe-nl.code-workspace)",
+      "Bash(node app.js create test-ws-delete-me)"
+    ],
+    "additionalDirectories": [
+      "/tmp/test-workspaces",
+      "/Users/marcotten/Documents/projects/vsc-workspaces/test-ws-delete-me"
+    ]
+  }
+}
