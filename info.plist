@@ -52,11 +52,11 @@
 				<false/>
 			</dict>
 		</array>
-		<key>A6D4486A-D5D1-4869-9C62-6D216BE1760D</key>
+		<key>8D9FCFDB-4B88-4D67-9759-6FC4CF21E6EE</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>8D9FCFDB-4B88-4D67-9759-6FC4CF21E6EE</string>
+				<string>01E88E81-A6EA-4CD0-9CD5-AA3162898C52</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -65,11 +65,11 @@
 				<false/>
 			</dict>
 		</array>
-		<key>8D9FCFDB-4B88-4D67-9759-6FC4CF21E6EE</key>
+		<key>A6D4486A-D5D1-4869-9C62-6D216BE1760D</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>01E88E81-A6EA-4CD0-9CD5-AA3162898C52</string>
+				<string>8D9FCFDB-4B88-4D67-9759-6FC4CF21E6EE</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -211,11 +211,7 @@ end run</string>
 				<key>runningsubtext</key>
 				<string>Loading workspaces...</string>
 				<key>script</key>
-				<string>on run argv
-    set query to item 1 of argv
-    set jsonOutput to do shell script "./visualcode workspace " &amp; quoted form of query
-    return jsonOutput
-end run</string>
+				<string>./visualcode workspace "$1"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -225,7 +221,7 @@ end run</string>
 				<key>title</key>
 				<string>Open workspace ...</string>
 				<key>type</key>
-				<integer>6</integer>
+				<integer>0</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -244,13 +240,13 @@ end run</string>
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>script</key>
-				<string>cd "$alfred_preferences/../Workflows/$alfred_workflow_uid" &amp;&amp; ./visualcode symlink "{query}" &gt;/dev/null 2&gt;&amp;1 &amp;</string>
+				<string>./visualcode symlink "$1" &gt;/dev/null 2&gt;&amp;1 &amp;</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>8</integer>
+				<integer>0</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -302,14 +298,7 @@ end run</string>
 				<key>runningsubtext</key>
 				<string></string>
 				<key>script</key>
-				<string>on run argv
-    set query to item 1 of argv
-    if query is "" then
-        return "{\"items\": [{\"title\": \"Type a workspace name\", \"valid\": false}]}"
-    else
-        return "{\"items\": [{\"title\": \"Create workspace: " &amp; query &amp; "\", \"subtitle\": \"/Users/marcotten/Documents/projects/vsc-workspaces/" &amp; query &amp; "\", \"valid\": true, \"arg\": \"" &amp; query &amp; "\"}]}"
-    end if
-end run</string>
+				<string>./visualcode workspace-new "$1"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -319,7 +308,7 @@ end run</string>
 				<key>title</key>
 				<string>New workspace ...</string>
 				<key>type</key>
-				<integer>6</integer>
+				<integer>0</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -338,13 +327,13 @@ end run</string>
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>script</key>
-				<string>cd "$alfred_preferences/../Workflows/$alfred_workflow_uid" &amp;&amp; ./visualcode create "{query}"</string>
+				<string>WSFILE=$(./visualcode create "$1") &amp;&amp; code "$WSFILE"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
-				<integer>8</integer>
+				<integer>0</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
@@ -383,19 +372,19 @@ end run</string>
 			<key>ypos</key>
 			<real>310</real>
 		</dict>
+		<key>01E88E81-A6EA-4CD0-9CD5-AA3162898C52</key>
+		<dict>
+			<key>xpos</key>
+			<real>655</real>
+			<key>ypos</key>
+			<real>710</real>
+		</dict>
 		<key>0348AE6D-A2E2-4B81-A3ED-E2D8ED24E670</key>
 		<dict>
 			<key>xpos</key>
 			<real>655</real>
 			<key>ypos</key>
 			<real>405</real>
-		</dict>
-		<key>D59BCC57-E6F6-4B8D-A94D-F93445ACB52E</key>
-		<dict>
-			<key>xpos</key>
-			<real>650</real>
-			<key>ypos</key>
-			<real>235</real>
 		</dict>
 		<key>2C8E8F5A-FEB4-4E04-BB92-B7AB27882C67</key>
 		<dict>
@@ -418,13 +407,6 @@ end run</string>
 			<key>ypos</key>
 			<real>590</real>
 		</dict>
-		<key>A6D4486A-D5D1-4869-9C62-6D216BE1760D</key>
-		<dict>
-			<key>xpos</key>
-			<real>205</real>
-			<key>ypos</key>
-			<real>710</real>
-		</dict>
 		<key>8D9FCFDB-4B88-4D67-9759-6FC4CF21E6EE</key>
 		<dict>
 			<key>xpos</key>
@@ -432,12 +414,19 @@ end run</string>
 			<key>ypos</key>
 			<real>710</real>
 		</dict>
-		<key>01E88E81-A6EA-4CD0-9CD5-AA3162898C52</key>
+		<key>A6D4486A-D5D1-4869-9C62-6D216BE1760D</key>
 		<dict>
 			<key>xpos</key>
-			<real>655</real>
+			<real>205</real>
 			<key>ypos</key>
 			<real>710</real>
+		</dict>
+		<key>D59BCC57-E6F6-4B8D-A94D-F93445ACB52E</key>
+		<dict>
+			<key>xpos</key>
+			<real>650</real>
+			<key>ypos</key>
+			<real>235</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
@@ -457,11 +446,11 @@ end run</string>
 			<key>description</key>
 			<string>Fullpath to Project &amp; and or Document folders comma separated...</string>
 			<key>label</key>
-			<string>wds</string>
+			<string>projects_dir</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>wds</string>
+			<string>projects_dir</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -478,15 +467,36 @@ end run</string>
 			<key>description</key>
 			<string>Fullpath to folder(s) containing .code-workspace files, comma separated</string>
 			<key>label</key>
-			<string>workspace_dirs</string>
+			<string>workspaces_dir</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
-			<string>workspace_dirs</string>
+			<string>workspaces_dir</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>placeholder</key>
+				<string>~/.claude,~/Documents/projects/my-app</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Specific project paths to always show, comma separated (e.g. ~/.claude)</string>
+			<key>label</key>
+			<string>specific_projects</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>specific_projects</string>
 		</dict>
 	</array>
 	<key>version</key>
-	<string>1.0.5</string>
+	<string>1.0.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/Marcuzzz/visualcode_alfred_actions</string>
 </dict>

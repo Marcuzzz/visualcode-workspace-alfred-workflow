@@ -1,7 +1,10 @@
 require('dotenv').config();
-const defaultWDS = "~/Documents/projects,~/Documents".split(',');
-const WDS = process.env.wds ? process.env.wds.split(',') : defaultWDS;
-const WORKSPACE_DIRS = process.env.workspace_dirs ? process.env.workspace_dirs.split(',') : [];
+const os = require('os');
+const expandHome = p => p.replace(/^~/, os.homedir());
+const defaultProjectsDir = "~/Documents/projects,~/Documents".split(',').map(expandHome);
+const WDS = (process.env.projects_dir ? process.env.projects_dir.split(',') : defaultProjectsDir).map(expandHome);
+const WORKSPACE_DIRS = (process.env.workspaces_dir ? process.env.workspaces_dir.split(',') : []).map(expandHome);
+const SPECIFIC_PROJECTS = (process.env.specific_projects ? process.env.specific_projects.split(',') : []).map(expandHome);
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 const path = require('path');
@@ -75,6 +78,16 @@ function runSearch(searchTerm) {
   const folderSearches = WDS.map(directoryPath => searchFolders(directoryPath, searchTerm));
   const workspaceSearches = WORKSPACE_DIRS.map(directoryPath => searchWorkspaces(directoryPath, searchTerm));
 
+  const specificItems = SPECIFIC_PROJECTS
+    .filter(p => p && path.basename(p).toLowerCase().includes(searchTerm.toLowerCase()))
+    .map(p => ({
+      title: path.basename(p),
+      subtitle: `Open project ...`,
+      valid: true,
+      arg: p,
+      icon: { path: "/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/AlertCautionIcon.icns" }
+    }));
+
   Promise.all([...folderSearches, ...workspaceSearches])
     .then(allResults => {
       const flatFolders = [].concat(...allResults.slice(0, folderSearches.length));
@@ -96,7 +109,7 @@ function runSearch(searchTerm) {
         icon: { path: "/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/SidebarDocumentsFolder.icns" }
       }));
 
-      console.log(JSON.stringify({ "items": [...workspaceItems, ...folderItems] }));
+      console.log(JSON.stringify({ "items": [...specificItems, ...workspaceItems, ...folderItems] }));
     })
     .catch(err => {
       console.error('Error:', err.message);
@@ -167,21 +180,60 @@ function runSymlink(workspaceFilePath) {
     });
 }
 
-function runCreate(workspaceName) {
+function runWorkspaceNewSearch(searchTerm) {
+  const folderSearches = WDS.map(directoryPath => searchFolders(directoryPath, searchTerm));
+
+  Promise.all(folderSearches)
+    .then(allResults => {
+      const flatFolders = [].concat(...allResults);
+      const items = flatFolders.map(folder => ({
+        title: folder.title,
+        subtitle: `Create workspace from ${folder.title}`,
+        valid: true,
+        arg: folder.fullPath,
+        icon: { path: "/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/AlertCautionIcon.icns" }
+      }));
+      console.log(JSON.stringify({ items }));
+    })
+    .catch(err => {
+      console.error('Error:', err.message);
+    });
+}
+
+function runCreate(projectPath) {
+  const workspaceName = path.basename(projectPath);
   const workspaceDir  = path.join(WORKSPACE_BASE, workspaceName);
   const workspaceFile = path.join(WORKSPACE_BASE, workspaceName + '.code-workspace');
   const claudeDir     = path.join(workspaceDir, '.claude');
 
   fs.mkdirSync(claudeDir, { recursive: true });
 
-  const workspaceContent = JSON.stringify({ folders: [], settings: {} }, null, 2);
+  const workspaceContent = JSON.stringify({ folders: [{ path: projectPath }], settings: {} }, null, 2);
   fs.writeFileSync(workspaceFile, workspaceContent);
+
+  // Set up symlink for the project folder immediately
+  const symlinkPath = path.join(projectPath, '.claude');
+  try {
+    const stat = fs.lstatSync(symlinkPath);
+    if (stat.isSymbolicLink()) {
+      const existing = fs.readlinkSync(symlinkPath);
+      if (existing !== claudeDir) {
+        fs.unlinkSync(symlinkPath);
+        fs.symlinkSync(claudeDir, symlinkPath);
+      }
+    }
+    // real directory — skip
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      fs.symlinkSync(claudeDir, symlinkPath);
+    }
+  }
 
   process.stdout.write(workspaceFile);
 }
 
 // --- Dispatcher ---
-const KNOWN_MODES = ['workspace', 'symlink', 'create'];
+const KNOWN_MODES = ['workspace', 'workspace-new', 'symlink', 'create'];
 const mode = process.argv[2];
 const arg  = process.argv[3] || '';
 
@@ -190,6 +242,8 @@ if (!KNOWN_MODES.includes(mode)) {
   runSearch(mode || '');
 } else if (mode === 'workspace') {
   runWorkspaceSearch(arg);
+} else if (mode === 'workspace-new') {
+  runWorkspaceNewSearch(arg);
 } else if (mode === 'symlink') {
   runSymlink(arg);
 } else if (mode === 'create') {
